@@ -10,7 +10,7 @@ export const verifyToken = (req, res, next) => {
     const token = authHeader.split(" ")[1]
     if (!token) return res.status(401).json({ status: "error", msg: "token no presente" })
     try {
-        const payload = jwt.verify(token, TOKEN_SECRET)
+        const payload = jwt.verify(token, TOKEN_SECRET) //tambien esta el comando decode que no sirve
         req.user = payload
         next()
     } catch (error) {
