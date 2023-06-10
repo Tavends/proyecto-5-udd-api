@@ -1,28 +1,17 @@
-import mongoose from 'mongoose'
-
-// const userSchema1 = new mongoose.Schema( {
-//   name: String,
-//   surname: String,
-//   age: Number
-// } )
+import mongoose, { SchemaTypes } from 'mongoose'
 
 const postSchema = new mongoose.Schema( {
-  titulo: {
-    type: String,
-    required: true
+  title: String,
+  body: String,
+  author: {
+    type: SchemaTypes.ObjectId,
+    required: true,
+    ref: "User"
   },
-  cuerpo: {
-    type: String,
-    required: true
-  },
-  foto: {
-    type: String,
-    required: true
-  },
-  estado: {
+  author2: {
     type: String,
     required: true
   }
-}, { versionKey: false } )
+}, { versionKey: false, id: false, toJSON: { virtuals: true }, toObject: { virtuals: true } } )
 
-export const PostsModel = new mongoose.model( 'Post', postSchema )
+export const PostModel = new mongoose.model( 'Post', postSchema )

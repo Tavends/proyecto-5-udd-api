@@ -1,50 +1,48 @@
 import { awaitCatcher } from 'await-catcher'
-import { PostsModel } from '../models/posts.model.js'
-
-export async function createPosts( req, res ) {
+import { PostModel } from '../models/post.model.js'
+export async function createPost( req, res ) {
   const body = req.body
-
-  const [ postsCreated, error ] = await awaitCatcher( PostsModel.create( body ) )
+  const [ postCreated, error ] = await awaitCatcher( PostModel.create( body ) )
   if ( error ) {
     return res.status( 400 ).json( { status: "error", msg: error.message } )
   }
-  return res.status( 201 ).json( postsCreated )
+  return res.status( 201 ).json( postCreated )
 
 }
 
 export async function getPosts( req, res ) {
-  const [ posts, error ] = await awaitCatcher( PostsModel.find() )
+  const [ posts, error ] = await awaitCatcher( PostModel.find().populate( "author", "name surname age" ).exec() )
   if ( error ) {
     return res.status( 400 ).json( { status: "error", msg: error.message } )
   }
   return res.status( 200 ).json( posts )
 }
 
-export async function getPostsById( req, res ) {
+export async function getPostById( req, res ) {
   const id = req.params.id
-  const [ posts, error ] = await awaitCatcher( PostsModel.findById( id ) )
-  if ( !posts || error ) {
-    return res.status( 404 ).json( { status: "error", msg: "Post no encontrado" } )
+  const [ post, error ] = await awaitCatcher( PostModel.findById( id ).populate( "author", "-name -surname -age -fullName -_id" ).exec() )
+  if ( !post || error ) {
+    return res.status( 404 ).json( { status: "error", msg: "usuario no encontrado" } )
   }
-  console.log( posts )
-  return res.status( 200 ).json( posts )
+  console.log( post )
+  return res.status( 200 ).json( post )
 }
 
-export async function updatePostsById( req, res ) {
+export async function updatePostById( req, res ) {
   const id = req.params.id
   const body = req.body
-  const [ postsUpdated, error ] = await awaitCatcher( PostsModel.findByIdAndUpdate( id, body, { new: true } ) )
+  const [ postUpdated, error ] = await awaitCatcher( PostModel.findByIdAndUpdate( id, body, { new: true } ) )
   if ( error ) {
-    return res.status( 404 ).json( { status: "error", msg: "Post no encontrado" } )
+    return res.status( 404 ).json( { status: "error", msg: "usuario no encontrado" } )
   }
-  return res.status( 200 ).json( postsUpdated )
+  return res.status( 200 ).json( postUpdated )
 }
 
-export async function deletePostsById( req, res ) {
+export async function deletePostById( req, res ) {
   const id = req.params.id
-  const [ postsDeleted, error ] = await awaitCatcher( PostsModel.findByIdAndDelete( id ) )
+  const [ postDeleted, error ] = await awaitCatcher( PostModel.findByIdAndDelete( id ) )
   if ( error ) {
-    return res.status( 404 ).json( { status: "error", msg: "Post no encontrado" } )
+    return res.status( 404 ).json( { status: "error", msg: "usuario no encontrado" } )
   }
-  return res.status( 200 ).json( postsDeleted )
+  return res.status( 200 ).json( postDeleted )
 }
