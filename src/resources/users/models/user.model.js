@@ -1,25 +1,56 @@
+import crypto from 'crypto'
 import mongoose from 'mongoose'
-// forma de forzar la importacion para error COMMONG JS - import * validator from "validator"
-
-// const userSchema1 = new mongoose.Schema( {
-//   name: String,
-//   surname: String,
-//   age: Number
-// } )
-
+import validator from 'validator'
 const userSchema = new mongoose.Schema( {
   name: {
     type: String,
-    required: true
+    required: true,
+    trim: true,
+    maxLength: 20
   },
   surname: {
     type: String,
     required: true
   },
-  age: {
-    type: Number,
-    required: false
-  }
-}, { versionKey: false } )
+  email: {
+    type: String,
+    lowercase: true,
+    validate: function ( email ) {
+      return validator.isEmail( email )
+    }
+  },
+  password: {
+    type: String,
+    required: true,
+    select: false
+  },
+  isAdmin: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+  salt: String
+
+}, { versionKey: false, id: false, toJSON: { virtuals: true }, toObject: { virtuals: true } } )
+
+userSchema.methods.hashPassword = function ( password ) {
+  this.salt = crypto.randomBytes( 16 ).toString( "hex" )
+  this.password = crypto.pbkdf2Sync( password, this.salt, 10000, 512, 'sha512' ).toString( 'hex' )
+}
+
+userSchema.pre( 'save', function ( next ) {
+  console.log( "Usuario a agregar" )
+  console.log( this.toJSON() );
+  next()
+} )
+
+userSchema.post( 'save', function ( document ) {
+  console.log( "Usuario agregado" )
+  console.log( document );
+} )
+
+userSchema.virtual( 'fullName' ).get( function () {
+  return `${ this.name } ${ this.surname }`
+} )
 
 export const UserModel = new mongoose.model( 'User', userSchema )

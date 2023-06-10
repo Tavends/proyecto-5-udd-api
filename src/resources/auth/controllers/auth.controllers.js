@@ -9,10 +9,9 @@ export const login = async (req, res) => {
     }
 // Buscar el usuario en la DB y se verifica si la contraseña es valida
 const payload = {
-    role: "ADMIN",
+    id: "ADMIN",
     name: "Tomas",
     surname: "Avendaño",
-    email: "tavends@outlook.com"
 }  
 const token = jwt.sign(payload, TOKEN_SECRET, {
     expiresIn: 10,
@@ -20,3 +19,15 @@ const token = jwt.sign(payload, TOKEN_SECRET, {
 })
 return res.status(200).json({token})  
 }
+
+export const signup = async ( req, res ) => {
+    const body = req.body
+    const user = new UserModel( body )
+    user.hashPassword( body.password )
+    const [ userSaved, error ] = await awaitCatcher( user.save() )
+    if ( !userSaved || error ) {
+      console.error( error )
+      return res.status( 400 ).json( { status: "error", msg: "no se pudo registrar al usuario" } )
+    }
+    return res.status( 201 ).json( { status: "ok", msg: "usuario registrado correctamente" } )
+  }
