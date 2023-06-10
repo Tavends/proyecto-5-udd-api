@@ -33,7 +33,7 @@ export async function getUserById( req, res ) {
     return res.status( 404 ).json( { status: "error", msg: "usuario no encontrado" } )
   }
   const id = req.params.id
-  const [ user, error ] = await awaitCatcher( UserModel.findById( id ) )
+  const [ user, error ] = await awaitCatcher( UserModel.findById( id ) ) //para excluir un campo se debe editar el contenido del findById agregando un campo con ,
   
   console.log( user )
   return res.status( 200 ).json( user )
