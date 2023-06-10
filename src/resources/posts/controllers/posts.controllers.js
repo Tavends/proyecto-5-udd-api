@@ -1,5 +1,5 @@
 import { awaitCatcher } from 'await-catcher'
-import { PostModel } from '../models/post.model.js'
+import { PostModel } from '../models/posts.model.js'
 export async function createPost( req, res ) {
   const body = req.body
   const [ postCreated, error ] = await awaitCatcher( PostModel.create( body ) )

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login, signup } from '../controllers/auth.controller.js';
+import { login, signup } from '../controllers/auth.controllers.js';
 
 const authRoutes = Router()
 const baseURI = "/auth"
