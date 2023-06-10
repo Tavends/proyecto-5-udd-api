@@ -29,11 +29,12 @@ export async function getUsers( req, res ) {
 }
 
 export async function getUserById( req, res ) {
-  const id = req.params.id
-  const [ user, error ] = await awaitCatcher( UserModel.findById( id ) )
   if ( !user || error ) {
     return res.status( 404 ).json( { status: "error", msg: "usuario no encontrado" } )
   }
+  const id = req.params.id
+  const [ user, error ] = await awaitCatcher( UserModel.findById( id ) )
+  
   console.log( user )
   return res.status( 200 ).json( user )
 }
