@@ -10,7 +10,6 @@ export const login = async ( req, res ) => {
   if ( !email || !password ) {
     return res.status( 400 ).json( { status: "error", msg: "el usuario o contraseña no pueden ser vacíos" } )
   }
-  // Buscar el usuario en la DB y se verifica si la contraseña es válida
   const [ userFound, error ] = await awaitCatcher( getUserByEmail( email ) )
   if ( error ) {
     return res.status( 404 ).json( { status: "error", msg: "usuario no encontrado" } )

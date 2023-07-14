@@ -3,15 +3,7 @@ import { UserModel } from '../models/user.model.js'
 const users = []
 export async function createUser( req, res ) {
   const body = req.body
-  // try {
-  //   const userCreated = await UserModel.create( body ) //insertOne en mongo
-  //   return res.status( 201 ).json( userCreated )
 
-  // } catch ( error ) {
-  //   return res.status( 400 ).json( { status: "error", msg: error.message } )
-  // }
-  // const newUser = new UserModel( body )
-  // await newUser.save()
   const [ userCreated, error ] = await awaitCatcher( UserModel.create( body ) )
   if ( error ) {
     return res.status( 400 ).json( { status: "error", msg: error.message } )
